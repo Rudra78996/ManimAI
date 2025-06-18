@@ -9,16 +9,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
+    "@azure-rest/ai-inference": "latest",
+    "@azure/core-auth": "latest",
+    "@azure/core-sse": "latest",
     "@google/generative-ai": "^0.24.1",
     "body-parser": "^2.2.0",
+    "cloudinary": "^2.6.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "openai": "^5.3.0",
     "python-shell": "^5.0.0",
-     "cloudinary": "^2.6.1",
     "uuid": "^11.1.0"
   }
 }

@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import nodemailer from "../config/nodemailer.js";
+import { EMAIL_VERIFY_TEMPLATE, RESET_PASSWORD_TEMPLATE, WELCOME_TEMPLATE } from "../config/emailTemplates.js";
 
 export const register = async (req, res) => {
 
@@ -31,7 +32,7 @@ export const register = async (req, res) => {
         from : process.env.NodeMailerUser,
         to : email,
         subject : "Welcome to ManimAI",
-        text : "Welcome to ManimAI website. Your account has been created with email id "+email
+        html : WELCOME_TEMPLATE.replace("{{user_name}}", name)
     };
 
     await nodemailer.sendMail(receiver);
@@ -103,11 +104,12 @@ export const sendVerifyOtp = async (req, res) => {
             from : process.env.NodeMailerUser,
             to : user.email,
             subject : "Account verification OTP",
-            text : `Your OTP is ${otp}`
+            html : EMAIL_VERIFY_TEMPLATE.replace("{{user_name}}", user.name).replace("{{otp_code}}", otp)
         };
         await nodemailer.sendMail(receiver);
         res.json({success:true, message: "verification OTP sent on Email"});
     } catch(error) {
+        console.error("Error sending verification OTP:", error);
         res.json({success : false, message : error.message});
     }
 }
@@ -165,7 +167,7 @@ export const sendResetOtp = async (req, res) => {
             from : process.env.NodeMailerUser,
             to : user.email,
             subject : "Password Reset OTP",
-            text : `Your OTP for resetting your password id ${otp}. Use this OTP to proceed with resetting your password`
+            html : RESET_PASSWORD_TEMPLATE.replace("{{user_name}}", user.name).replace("{{otp_code}}", otp)
         };
         await nodemailer.sendMail(receiver);
 
