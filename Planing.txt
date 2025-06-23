@@ -1,0 +1,24 @@
+Mongo DB Model
+Chat
+{
+    userId : string
+    topic : string
+    CreatedAt : Date
+}
+
+message {
+    chatId : 
+    userId : 
+    role : "user"| "ai"
+    content : string
+    isLiked : Boolean
+    timestamp : Date
+}
+
+Media {
+    chatId : 
+    userId :
+    url :
+    isLiked :
+    CreatedAt :
+}
