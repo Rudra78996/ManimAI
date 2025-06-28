@@ -73,3 +73,27 @@ export const getAllMedia = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+export const getAllChats = async (req, res) => {
+    const { userId } = getAuth(req);
+    try {
+        const chats = await Chat.find({userId}).sort({ createdAt: -1 });
+        
+        const chatsTopic = await Promise.all(
+            chats.map(async (chat)=>{
+                const messages = await Message.find({ chatId: chat._id, userId }).sort({ _id: 1 });
+                if(messages.length > 1) {
+                    let topic = messages[1].content;
+                    return {"topic" : topic.slice(0, Math.min(50, topic.length)), "chatId" : messages[1].chatId};
+                }else {
+                    return null;
+                }
+            })
+        );
+        const filteredTopic = chatsTopic.filter(Boolean);     
+           
+        return res.json(filteredTopic);
+    }catch (err){
+        return res.status(500).json({ error: "Something went wrong." });
+    }
+}

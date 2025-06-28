@@ -23,6 +23,7 @@ const Chat = () => {
   const [isValid, setIsValid] = useState(true);
   const { getToken } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [chats, setChats] = useState([]);
 
   useEffect(() => {
     const isValidChat = async () => {
@@ -38,7 +39,20 @@ const Chat = () => {
         setIsValid(false);
       }
     };
+    const fetchChatsHistory = async () => {
+      try {
+        const token = await getToken();
+        const { data } = await axios.get(backendURL + "/api/chat/all-chats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setChats(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    
     isValidChat();
+    fetchChatsHistory();
     socket.connect();
     return () => socket.disconnect();
   }, []);
@@ -52,13 +66,18 @@ const Chat = () => {
         style={{
           width: sidebarOpen ? SIDEBAR_WIDTH : SIDEBAR_MIN_WIDTH,
           minWidth: sidebarOpen ? SIDEBAR_WIDTH : SIDEBAR_MIN_WIDTH,
-          transition: "width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+          transition:
+            "width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
           position: "relative",
           overflow: "hidden",
         }}
-        className="h-full"
+        className="h-full border-r-2 border-foreground/10"
       >
-        <AppSidebar isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen((v) => !v)} />
+        <AppSidebar
+          isOpen={sidebarOpen}
+          toggleSidebar={() => setSidebarOpen((v) => !v)}
+          chats = {chats}
+        />
       </div>
       <div className="h-screen flex-1">
         {/* navbar */}

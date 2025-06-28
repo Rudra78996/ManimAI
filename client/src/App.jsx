@@ -5,6 +5,7 @@ import { ToastContainer } from "react-toastify";
 import Chat from "./pages/Chat";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import SignInPage from "./pages/SignIn"; 
+import Media from "./pages/Media";
 
 const App = () => {
   return (
@@ -17,6 +18,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Chat />
+            </ProtectedRoute>
+          }
+        />
+        <Route 
+          path="/media"
+          element={
+            <ProtectedRoute>
+              <Media />
             </ProtectedRoute>
           }
         />
