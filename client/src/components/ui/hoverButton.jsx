@@ -3,10 +3,8 @@ import { Link } from "react-router-dom";
 
 const hoverButton = () => {
   return (
-    <div className="flex justify-center mb-8">
+    <div className="flex justify-center mb-8" >
       <Link
-        to={"/chat"}
-        target="_blank"
         rel="noopener noreferrer"
         className="inline-flex"
       >

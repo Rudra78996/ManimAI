@@ -20,15 +20,16 @@ const Home = () => {
   const { isSignedIn, user, isLoaded } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const createGroup = async () => {
+    if (isLoading) return;
     if (!isSignedIn) {
-      navigate("/sign-in");
+      navigate("/sign-in", { replace: true });
       return;
     }
-    // setIsLoading(true)
+    setIsLoading(true);
     try {
       const token = await getToken();
       const res = await axios.post(
-        backendURL + "/api/chat/create-chat",
+        `${backendURL}/api/chat/create-chat`,
         {},
         {
           headers: {
@@ -36,21 +37,19 @@ const Home = () => {
           },
         }
       );
-      setIsLoading(false);
-      navigate(`/chat/${res.data.chatId}`);
-      return;
+      window.location.replace(`/chat/${res.data.chatId}`);
     } catch (e) {
-      console.log(e);
-    } finally {
+      console.error(e);
       setIsLoading(false);
     }
   };
-  if (!isLoaded)
+  if (!isLoaded || isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
         <Loader />
       </div>
     );
+  }
   return (
     <div className="relative min-h-screen ">
       <div className="absolute inset-0 -z-10 h-full w-full overflow-hidden">
@@ -66,7 +65,9 @@ const Home = () => {
       <NavBar />
       <main className="mt-16 flex justify-center w-full flex-col relative items-center gap-8 px-4 pt-16">
         <div className="relative max-w-3xl flex-col justify-center items-center mx-auto">
-          <HoverButton />
+          <div onClick={createGroup}>
+            <HoverButton />
+          </div>
           <h1 className="text-center text-3xl font-medium text-gray-900 dark:text-gray-50 sm:text-6xl">
             Create stunning animations
             <br />
@@ -78,26 +79,27 @@ const Home = () => {
             Powered by AI — no code, just clear visuals in minutes
           </p>
           <div className="mt-10 flex gap-4 justify-center">
-          <Button
-            className="text-lg md:text-xl h-10 px-6 py-6 cursor-pointer"
-            onClick={createGroup}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <span className="flex items-center gap-2">
-                Creating...
-              </span>
-            ) : (
-              "Get Started"
-            )}
-          </Button>
-            <Button 
+            <Button
+              className="text-lg md:text-xl h-10 px-6 py-6 cursor-pointer"
+              onClick={createGroup}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">Creating...</span>
+              ) : (
+                "Get Started"
+              )}
+            </Button>
+            <Button
               className="text-lg md:text-xl h-10 px-6 py-6 cursor-pointer"
               variant="outline"
               onClick={() => {
                 const section = document.getElementById("demo-video");
                 if (section) {
-                  section.scrollIntoView({ behavior: "smooth", block: "center" });
+                  section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                  });
                 }
               }}
             >
@@ -105,7 +107,10 @@ const Home = () => {
             </Button>
           </div>
         </div>
-        <div className="relative mt-16 aspect-video max-w-[1200px] rounded-md md:mt-32 flex items-center justify-center " id="demo-video">
+        <div
+          className="relative mt-16 aspect-video max-w-[1200px] rounded-md md:mt-32 flex items-center justify-center "
+          id="demo-video"
+        >
           <div
             className="absolute -z-10 h-[140%] w-[140%] rounded-[40px] opacity-40 blur-[250px] animate-pulse"
             style={{
@@ -115,7 +120,7 @@ const Home = () => {
           />
 
           {/* Video */}
-          <div className="" >
+          <div className="">
             <video
               src={demoVideo}
               autoPlay
