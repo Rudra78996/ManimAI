@@ -1,6 +1,8 @@
 import Chat from "../models/chat.js";
 import { getAuth } from "@clerk/express";
 import Message from "../models/message.js";
+import message from "../models/message.js";
+import Media from "../models/media.js";
 
 export const createChat = async (req, res) => {
     const { userId } = getAuth(req);
@@ -17,10 +19,57 @@ export const createChat = async (req, res) => {
 }
 
 export const isValidChat = async (req, res) => {
-    
     try {
         return res.status(200).json({message:"valid"});
     }catch(e) {
         return res.status(500).send("Error: "+e.message);
     }
 }
+export const allMessage = async (req, res) => {
+    const { userId } = getAuth(req);
+    const {chatId} = req.body;
+    try {
+        const chats = await message.find({chatId, userId});
+        return res.status(200).send(chats);
+    } catch (error) {
+        return res.status(500).json({success:false, message:error.message});
+    }
+}
+export const saveMessage = async (req, res) => {
+  const { userId } = getAuth(req);
+  const { chatId, content } = req.body;
+
+  try {
+    const message = new Message({ chatId, userId, role: "USER", content });
+    await message.save();
+    console.log("message saved");
+
+    // Send immediate success response
+    res.status(200).send({ success: true, message: "message saved successfully." });
+
+    // Trigger animation request in background
+    const response = await fetch("https://manim-ai-backend-wywd.onrender.com/generate-animation", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt: content })
+    });
+
+    const result = await response.text();
+    console.log("Animation result:", result);
+  } catch (err) {
+    console.error("Server crash:", err);
+    return res.status(500).send("Error: " + err.message);
+  }
+};
+
+export const getAllMedia = async (req, res) => {
+    const { chatId } = req.body;
+    try {
+        const media = await Media.find({ chatId }).sort({ timestamp: -1 });
+        return res.status(200).json(media);
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
