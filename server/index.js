@@ -11,7 +11,7 @@ import Media from "./models/media.js";
 import chatRouter from "./routes/chatRoutes.js";
 
 const port = process.env.PORT || 3000;
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = [process.env.FRONTEND_URL];
 
 const app = express();
 const server = http.createServer(app);
