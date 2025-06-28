@@ -181,11 +181,11 @@
   background: var(--sidebar);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: #b0b0b0; /* darker for visibility */
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
+  background: #888888;
 }
 
 /* Firefox */

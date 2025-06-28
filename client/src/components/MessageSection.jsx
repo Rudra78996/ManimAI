@@ -10,13 +10,6 @@ import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 
-// Utility to check if a string is a video URL
-const isVideoUrl = (url) => {
-  return (
-    typeof url === 'string' &&
-    (url.match(/\.(mp4|webm|mov)$/i) || url.includes('cloudinary.com') || url.includes('video'))
-  );
-};
 
 const MessageSection = ({ chatId }) => {
   const { getToken, userId } = useAuth();
@@ -77,19 +70,12 @@ const MessageSection = ({ chatId }) => {
                 </div>
                 <div className="bg-gray-100 dark:bg-zinc-800 dark:text-gray-100 rounded-xl px-4 py-2 text-sm max-w-[75%] text-left relative group break-words whitespace-pre-line">
                   {msg.type === "loading" ? (
-                    <Loader2Icon className="animate-spin" />
-                  ) : isVideoUrl(msg.content) ? (
-                    <Button
-                      variant="outline"
-                      onClick={() => window.open(msg.content, "_blank")}
-                      className="p-2 text-sm"
-                    >
-                      <ExternalLinkIcon className="mr-1 w-4 h-4" /> Open
-                    </Button>
+                    <div className="flex items-center gap-2 animate-pulse">
+                      <Loader2Icon className="animate-spin" />
+                      <span>⏳ Generating your animation... Please wait for the magic!</span>
+                    </div>
                   ) : (
-                    <>
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    </>
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
                   )}
                 </div>
               </div>

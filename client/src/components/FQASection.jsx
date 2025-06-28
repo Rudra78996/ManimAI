@@ -1,8 +1,10 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const FQASection = () => {
+  const navigate = useNavigate();
   const questions = [
     {
       question: "What is ManimAI",
@@ -86,7 +88,7 @@ const FQASection = () => {
         <p className="mb-4 text-gray-600 dark:text-gray-300">
           Still have questions?
         </p>
-        <Button className="h-9 px-5 text-base">Contact Support</Button>
+        <Button className="h-9 px-5 text-base cursor-pointer" onClick={()=>navigate("/contact")}>Contact Support</Button>
       </div>
     </div>
   );

@@ -40,17 +40,17 @@ const MainNav = () => {
               <NavigationMenuContent className="w-[200px]">
                 <ul className="flex flex-col gap-2">
                   <li>
-                    <NavigationMenuLink href="/models/gemini">
+                    <NavigationMenuLink href="/">
                       Gemini
                     </NavigationMenuLink>
                   </li>
                   <li>
-                    <NavigationMenuLink href="/models/claude">
+                    <NavigationMenuLink href="/">
                       Claude
                     </NavigationMenuLink>
                   </li>
                   <li>
-                    <NavigationMenuLink href="/models/deepseek">
+                    <NavigationMenuLink href="/">
                       DeepSeek
                     </NavigationMenuLink>
                   </li>
@@ -58,19 +58,24 @@ const MainNav = () => {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuLink href="/chat" className="text-lg px-4 py-2">
+              <NavigationMenuLink href="/gallery" className="text-lg px-4 py-2">
                 Gallery
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuLink href="/chat" className="text-lg px-4 py-2">
+              <NavigationMenuLink href="/contact" className="text-lg px-4 py-2">
                 Contact
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuLink href="/chat" className="text-lg px-4 py-2">
+              <NavigationMenuLink className="text-lg px-4 py-2 cursor-pointer"  onClick={() => {
+                const section = document.getElementById("faq");
+                if (section) {
+                  section.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+              }}>
                 FAQ
               </NavigationMenuLink>
             </NavigationMenuItem>

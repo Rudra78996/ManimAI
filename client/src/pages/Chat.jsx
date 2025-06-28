@@ -14,9 +14,10 @@ import ChatNavbar from "@/components/ChatNavbar";
 import MessageSection from "@/components/MessageSection";
 import VideoSection from "@/components/VideoSection";
 import socket from "@/socket";
+import Loader from "../components/Loader";
 
-const SIDEBAR_WIDTH = 256; // 16rem
-const SIDEBAR_MIN_WIDTH = 48; // 3rem (for button)
+const SIDEBAR_WIDTH = 256;
+const SIDEBAR_MIN_WIDTH = 48;
 
 const Chat = () => {
   const { chatId } = useParams();
@@ -61,7 +62,6 @@ const Chat = () => {
 
   return (
     <div className="h-screen w-screen flex">
-      {/* Sidebar always rendered, width depends on open state */}
       <div
         style={{
           width: sidebarOpen ? SIDEBAR_WIDTH : SIDEBAR_MIN_WIDTH,
@@ -80,7 +80,6 @@ const Chat = () => {
         />
       </div>
       <div className="h-screen flex-1">
-        {/* navbar */}
         <ChatNavbar />
         <div className="flex w-full h-[93%]">
           <ResizablePanelGroup direction="horizontal">

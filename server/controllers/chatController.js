@@ -9,7 +9,7 @@ export const createChat = async (req, res) => {
     try {
         const chat = new Chat({ userId });
         await chat.save();
-        const message = new Message({chatId:chat._id, userId, role:"AI", content:"Hello! I'm ManimAI. Give me a topic or problem and I'll animate it for you!"});
+        const message = new Message({chatId:chat._id, userId, role:"AI", content:"👋 Welcome to ManimAI. Ready to turn your ideas into stunning math animations? Just type your topic or problem below and I'll generate a beautiful animation for you."});
         await message.save();
         return res.status(200).send({ chatId: chat._id });
     } catch (err) {
@@ -44,10 +44,8 @@ export const saveMessage = async (req, res) => {
     await message.save();
     console.log("message saved");
 
-    // Send immediate success response
     res.status(200).send({ success: true, message: "message saved successfully." });
 
-    // Trigger animation request in background
     const response = await fetch("https://manim-ai-backend-wywd.onrender.com/generate-animation", {
       method: "POST",
       headers: {
@@ -97,3 +95,28 @@ export const getAllChats = async (req, res) => {
         return res.status(500).json({ error: "Something went wrong." });
     }
 }
+
+export const likeMedia = async (req, res) => {
+    const { mediaId } = req.body;
+    try {
+        const media = await Media.findById(mediaId);
+        if (!media) {
+            return res.status(404).json({ success: false, message: "Media not found" });
+        }
+        media.isLiked = !media.isLiked;
+        await media.save();
+        return res.status(200).json({ success: true, isLiked: media.isLiked });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const getAllUserMedia = async (req, res) => {
+    const { userId } = getAuth(req);
+    try {
+        const media = await Media.find({ userId }).sort({ timestamp: -1 });
+        return res.status(200).json(media);
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};

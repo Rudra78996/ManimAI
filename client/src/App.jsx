@@ -6,6 +6,9 @@ import Chat from "./pages/Chat";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import SignInPage from "./pages/SignIn"; 
 import Media from "./pages/Media";
+import { Toaster } from "sonner";
+import Contact from "./pages/Contact";
+import Gallery from "./pages/Gallery";
 
 const App = () => {
   return (
@@ -13,6 +16,8 @@ const App = () => {
       <Routes>
        <Route path="/sign-in" element={<SignInPage />} />
         <Route path="/" element={<Home />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/gallery" element={<Gallery />} />
         <Route
           path="/chat/:chatId"
           element={
@@ -29,8 +34,10 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
       </Routes>
       <ToastContainer />
+      <Toaster richColors position="top-center" />
     </div>
   );
 };

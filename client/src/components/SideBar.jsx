@@ -52,7 +52,7 @@ const AppSidebar = ({ isOpen, toggleSidebar, chats }) => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed left-2 top-2 z-20 bg-muted text-foreground  shadow rotate-180 p-1"
+          className="cursor-pointer fixed left-2 top-2 z-20 bg-muted text-foreground  shadow rotate-180 p-1"
           onClick={toggleSidebar}
           aria-label="Open sidebar"
           style={{
@@ -74,7 +74,6 @@ const AppSidebar = ({ isOpen, toggleSidebar, chats }) => {
       className={`flex flex-col h-screen w-64 border-r transition-colors duration-300 bg-sidebar text-sidebar-foreground border-sidebar ml-0 relative `}
       style={{ minWidth: "16rem", width: "16rem", overflow: "auto" }}
     >
-      {/* Sidebar Header with close button inline */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-sidebar">
         <div className="p-2 rounded-lg bg-sidebar-accent">
           <Bot className="w-5 h-5 text-sidebar-accent-foreground" />
@@ -85,7 +84,7 @@ const AppSidebar = ({ isOpen, toggleSidebar, chats }) => {
         <Button
           variant="outline"
           size="icon"
-          className="bg-muted text-foreground border-muted-foreground shadow p-1 ml-2"
+          className="cursor-pointer bg-muted text-foreground border-muted-foreground shadow p-1 ml-2"
           onClick={toggleSidebar}
           aria-label="Close sidebar"
           style={{
@@ -102,7 +101,7 @@ const AppSidebar = ({ isOpen, toggleSidebar, chats }) => {
       {/* Action Buttons */}
       <div className="px-3 py-4 space-y-2">
         <Button
-          className="w-full flex items-center gap-3"
+          className="w-full flex items-center gap-3 cursor-pointer"
           size="default"
           onClick={createGroup}
         >
@@ -172,7 +171,7 @@ const AppSidebar = ({ isOpen, toggleSidebar, chats }) => {
           >
             <Zap className="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
           </motion.div>
-          <span>Generating... 1/2</span>
+          <span>Powered by ManimAI v1.0.0</span>
         </div>
       </div>
     </div>

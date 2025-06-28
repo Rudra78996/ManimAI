@@ -2,8 +2,7 @@ import React from "react";
 import NavBar from "../components/NavBar";
 import { Button } from "@/components/ui/button";
 import HoverButton from "@/components/ui/hoverButton";
-import demoVideo from "../assets/demo.mp4";
-import demoVideo2 from "../assets/demo2.mp4";
+import demoVideo from "../assets/demo-1.mp4";
 import FeatureCards from "@/components/FeatureSection";
 import FQASection from "@/components/FQASection";
 import Footer from "@/components/Footer";
@@ -13,16 +12,19 @@ import { useNavigate } from "react-router-dom";
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
+import { useState } from "react";
 
 const Home = () => {
   const navigate = useNavigate();
   const { getToken } = useAuth();
   const { isSignedIn, user, isLoaded } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
   const createGroup = async () => {
     if (!isSignedIn) {
       navigate("/sign-in");
       return;
     }
+    // setIsLoading(true)
     try {
       const token = await getToken();
       const res = await axios.post(
@@ -34,11 +36,13 @@ const Home = () => {
           },
         }
       );
-      console.log(res.data.chatId);
+      setIsLoading(false);
       navigate(`/chat/${res.data.chatId}`);
       return;
     } catch (e) {
       console.log(e);
+    } finally {
+      setIsLoading(false);
     }
   };
   if (!isLoaded)
@@ -74,21 +78,34 @@ const Home = () => {
             Powered by AI — no code, just clear visuals in minutes
           </p>
           <div className="mt-10 flex gap-4 justify-center">
-            <Button
-              className="text-lg md:text-xl h-10 px-6 py-6 cursor-pointer"
-              onClick={createGroup}
-            >
-              Get Started
-            </Button>
-            <Button
+          <Button
+            className="text-lg md:text-xl h-10 px-6 py-6 cursor-pointer"
+            onClick={createGroup}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="flex items-center gap-2">
+                Creating...
+              </span>
+            ) : (
+              "Get Started"
+            )}
+          </Button>
+            <Button 
               className="text-lg md:text-xl h-10 px-6 py-6 cursor-pointer"
               variant="outline"
+              onClick={() => {
+                const section = document.getElementById("demo-video");
+                if (section) {
+                  section.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+              }}
             >
               Learn More
             </Button>
           </div>
         </div>
-        <div className="relative mt-16 aspect-video max-w-[1200px] rounded-md md:mt-32 flex items-center justify-center  ">
+        <div className="relative mt-16 aspect-video max-w-[1200px] rounded-md md:mt-32 flex items-center justify-center " id="demo-video">
           <div
             className="absolute -z-10 h-[140%] w-[140%] rounded-[40px] opacity-40 blur-[250px] animate-pulse"
             style={{
@@ -98,9 +115,9 @@ const Home = () => {
           />
 
           {/* Video */}
-          <div className="">
+          <div className="" >
             <video
-              src={demoVideo2}
+              src={demoVideo}
               autoPlay
               loop
               muted
@@ -112,7 +129,7 @@ const Home = () => {
         <div>
           <FeatureCards />
         </div>
-        <div>
+        <div id="faq">
           <FQASection />
         </div>
         <Footer />
