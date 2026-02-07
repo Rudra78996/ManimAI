@@ -16,7 +16,7 @@ dotenv.config();
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENAI_API_KEY, // Replace with your OpenAI API key
+  apiKey: process.env.OPENROUTER_API_KEY, // Replace with your OpenAI API key
   defaultHeaders: {
     "HTTP-Referer": "<YOUR_SITE_URL>", // Optional. Site URL for rankings on openrouter.ai.
     "X-Title": "<YOUR_SITE_NAME>", // Optional. Site title for rankings on openrouter.ai.
@@ -148,40 +148,70 @@ app.post("/generate-animation", async (req, res) => {
 async function generateManimCode(prompt) {
   try {
     console.log("Generating Manim code for prompt:", prompt);
-    const userPrompt = `You are an AI agent that generates runnable Python code using Manim to animate educational and scientific visualizations based on user-provided prompts ${prompt}.
-        Your job is to:
-        - MOST IMPORTANT NOTE :  This code should be very simple and don't use any extra libraries, in our system we only have Manim installed.
-        - Generate **Manim Python code** from the given prompt.
-        - Ensure the code is **complete**, **runnable**, and uses ONLY the most **fundamental Manim functionalities**.
-        Explicitly avoid:
-        - LaTeX or 'Tex' (use 'Text' only).
-        - Advanced graphing functions like 'ax.plot' or coordinate systems.
-        - 3D objects or complex mathematical constructs.
-        - Any external libraries or advanced dependencies.
-        Additional requirements:
-        - The class name must be \`MyAnimation\`, inheriting from \`Scene\`.
-        - Use only primitive shapes (e.g., Circle, Square, Triangle, Line).
-        - Stick to basic transformations like \`.shift()\`, \`.move_to()\`, \`.animate.scale()\`, or \`.animate.rotate()\`.
-        - Output only the raw **Python code**, no markdown, explanation, or extra commentary.`;
+
     const completion = await openai.chat.completions.create({
-      model: "deepseek/deepseek-r1-0528:free",
+      model: "arcee-ai/trinity-large-preview:free",
+      temperature: 0,
+      presence_penalty: -1,
+      frequency_penalty: -1,
+      stop: ["</CODE>"],
       messages: [
         {
-          role: "user",
-          content: userPrompt,
+          role: "system",
+          content: `
+You are a code generator.
+
+Rules:
+- You MUST output ONLY valid Python code
+- The code MUST appear ONLY between <CODE> and </CODE>
+- No markdown, no explanations, no comments
+- No text outside these tags
+- If you violate this, the output is invalid
+`
         },
-      ],
+        {
+          role: "user",
+          content: `
+Generate runnable Manim Python code for the following prompt:
+${prompt}
+
+Constraints:
+- Only Manim is available
+- Class name: MyAnimation(Scene)
+- Use only basic primitives: Circle, Square, Triangle, Line, Text
+- No Tex, no LaTeX, no Axes, no plots
+- No 3D objects
+- No external libraries
+- Simple animations only: shift, move_to, scale, rotate
+
+Return EXACTLY in this format:
+
+<CODE>
+python code here
+</CODE>
+`
+        }
+      ]
     });
+
     const response = completion.choices[0].message.content;
-    const code = response.split("```python")[1].split("```")[0];
-    const cleanCode = code.replace(/```/g, "");
+
+    const match = response.match(/<CODE>([\s\S]*?)<\/CODE>/);
+    if (!match) {
+      console.error("Invalid model output:", response);
+      throw new Error("Model violated output format");
+    }
+
+    const cleanCode = match[1].trim();
     console.log(cleanCode);
     return cleanCode;
+
   } catch (error) {
-    console.error("Error in system prompt:", error);
-    throw new Error("Failed to set up system prompt.");
+    console.error("Error generating Manim code:", error);
+    throw error;
   }
 }
+
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
 });
