@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
       socket.emit("newMessage", [{ role: "AI", type: "loading", content: "⏳ Generating your animation... Please wait for the magic!" }]);
 
       const { data } = await axios.post(
-        "https://manim-ai-backend-wywd.onrender.com/generate-animation",
+        `${process.env.SERVER_URL}/generate-animation`,
         { prompt: currentMessage }
       );
       console.log(data);

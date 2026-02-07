@@ -5,3 +5,9 @@ services:
     ports:
       - "5050:5050"
     restart : unless-stopped
+  server:
+    build: "./server"
+    container_name: "backendServer"
+    ports:
+      - "3000:3000"
+    restart : unless-stopped
