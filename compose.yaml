@@ -1,0 +1,7 @@
+services:
+  backend:
+    build: "./backend"
+    container_name: "animationServer"
+    ports:
+      - "5050:5050"
+    restart : unless-stopped
